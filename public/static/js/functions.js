@@ -32,6 +32,8 @@ function savePaste() {
     let encrypted = aesCtr.encrypt(pasteContent);
     encrypted = aesjs.utils.hex.fromBytes(encrypted);
 
+    document.getElementById('createPasteBtn').disabled = true;
+
     fetch('/api/save', {
         method: 'POST',
         headers: {
