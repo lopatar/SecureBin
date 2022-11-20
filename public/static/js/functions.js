@@ -51,7 +51,7 @@ function savePaste() {
         const shortenUrl = document.getElementById('shortenUrl').checked;
 
         if (shortenUrl) {
-            fetch('https://s.lopatar.me/api/save', {
+            fetch('https://s.lopatar.me/api/shorten', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
