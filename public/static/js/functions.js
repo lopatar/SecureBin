@@ -9,26 +9,6 @@ function generateKey() {
     return buf;
 }
 
-function makeShortUrl(url)
-{
-    let shortenedUrl = '';
-
-    fetch('https://s.lopatar.me/api/shorten', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            'link': url
-        })
-    }).then(response => response.text()).then(data => {
-        shortenedUrl = data;
-    })
-
-    while (shortenedUrl === '') { }
-    return shortenedUrl;
-}
-
 function savePaste() {
     let pasteContent = document.getElementById('pasteContent').value;
 
@@ -71,10 +51,19 @@ function savePaste() {
         const shortenUrl = document.getElementById('shortenUrl').checked;
 
         if (shortenUrl) {
-            const shortenedUrl = makeShortUrl(url);
-            navigator.clipboard.writeText(shortenedUrl).then(() => {
-                alert('Shortened link copied to clipboard!');
-                window.location.href = url;
+            fetch('https://s.lopatar.me/api/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    'link': url
+                })
+            }).then(response => response.text()).then(link => {
+               navigator.clipboard.writeText(link).then(d => {
+                  alert('Shortened link has been copied to clipboard!');
+                  window.location.href = url;
+               });
             });
         } else {
             window.location.href = url;
