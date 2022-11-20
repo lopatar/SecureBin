@@ -11,6 +11,8 @@ function generateKey() {
 
 function makeShortUrl(url)
 {
+    let shortenedUrl = '';
+
     fetch('https://s.lopatar.me/api/shorten', {
         method: 'POST',
         headers: {
@@ -20,10 +22,11 @@ function makeShortUrl(url)
             'link': url
         })
     }).then(response => response.text()).then(data => {
-        return data;
+        shortenedUrl = data;
     })
 
-    return '';
+    while (shortenedUrl === '') { }
+    return shortenedUrl;
 }
 
 function savePaste() {
