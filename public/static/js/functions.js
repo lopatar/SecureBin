@@ -62,10 +62,10 @@ function savePaste() {
                     'link': url
                 })
             }).then(response => response.text()).then(link => {
-               navigator.clipboard.writeText(link).then(d => {
-                  alert('Shortened link has been copied to clipboard!');
-                  window.location.href = url;
-               });
+                navigator.clipboard.writeText(link).then(() => {
+                    alert('Shortened link has been copied to clipboard!');
+                    window.location.href = url;
+                });
             });
         } else {
             window.location.href = url;
