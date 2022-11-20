@@ -1,5 +1,10 @@
 function generateKey() {
     let buf = new Uint8Array(32);
+
+    if (!isSecureContext) {
+        return false;
+    }
+
     window.crypto.getRandomValues(buf);
     return buf;
 }
@@ -15,6 +20,12 @@ function savePaste() {
     pasteContent = aesjs.utils.utf8.toBytes(pasteContent);
 
     const keyBuf = generateKey();
+
+    if (keyBuf === false) {
+        alert('Could not generate key, not in secure context!!');
+        return;
+    }
+
     const keyHex = aesjs.utils.hex.fromBytes(keyBuf);
     const aesCtr = new aesjs.ModeOfOperation.ctr(keyBuf);
 
