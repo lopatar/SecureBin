@@ -1,0 +1,21 @@
+{
+  "name": "lopatar/securebin",
+  "description": "Zero knowledge pastebin alternative that delegates crypto operations to the browser!",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "App\\": "App/"
+    }
+  },
+  "require": {
+    "lopatar/php-sdkv2": "^2.3",
+    "ext-ctype": "*"
+  },
+  "license": "WTFPL",
+  "authors": [
+    {
+      "name": "Jiří Lopatář",
+      "email": "jiri@lopatar.me"
+    }
+  ]
+}

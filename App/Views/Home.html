@@ -1,0 +1,21 @@
+<body>
+<h1>SecureBin</h1>
+<p>Zero knowledge pastebin, that does encryption in the browser!</p>
+<div>
+    <label for="pasteContent">
+        Write your content here!
+    </label>
+</div>
+<div>
+    <textarea cols="70" id="pasteContent" required rows="40"></textarea>
+</div>
+<div>
+    <button onclick="savePaste()">Save!</button>
+</div>
+
+<p style="font-weight: bold">Encryption is handled using AES-256-CTR & cryptographically safe key generation</p>
+</body>
+<footer>
+    <a href="https://github.com/lopatar/SecureBin" target="_blank">Source code</a>
+</footer>
+</html>
