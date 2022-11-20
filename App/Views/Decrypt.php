@@ -4,6 +4,7 @@ $paste = $this->getProperty('paste');
 //Please do not allow for any characters on line 10, within the DIV!
 ?>
 <body onload="decryptPaste()">
+<a href="/"><-- Back</a>
 <h1>SecureBin</h1>
 <p>Zero knowledge pastebin, that does encryption in the browser!</p>
 <h3>Paste: <?= $paste->urlCode ?></h3>
