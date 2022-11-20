@@ -71,10 +71,11 @@ function savePaste() {
             const shortenedUrl = makeShortUrl(url);
             navigator.clipboard.writeText(shortenedUrl).then(() => {
                 alert('Shortened link copied to clipboard!');
+                window.location.href = url;
             });
+        } else {
+            window.location.href = url;
         }
-
-        window.location.href = url;
     })
 }
 
