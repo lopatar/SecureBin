@@ -127,8 +127,8 @@ function decryptPaste() {
             let decrypted = aesCtr.decrypt(cipherText);
             decrypted = aesjs.utils.utf8.fromBytes(decrypted);
             document.getElementById('pasteContent').value = decrypted;
-        } catch {
-            alert('Invalid key!');
+        } catch (ex) {
+            alert(ex);
         }
     })
 }
