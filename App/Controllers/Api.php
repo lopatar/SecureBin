@@ -23,7 +23,7 @@ final class Api
 			return $response;
 		}
 
-		$burnOnRead = boolval($burnOnRead);
+		$burnOnRead = (bool)$burnOnRead;
 
 		if (!ctype_xdigit($cipherText)) {
 			$response->setStatusCode(StatusCode::BAD_REQUEST);
