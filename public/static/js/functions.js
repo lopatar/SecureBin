@@ -84,6 +84,7 @@ function decryptPaste() {
         const shouldView = confirm("This paste is set to burn on read, do you want to read it? It won't be able to viewed anymore!");
 
         if (!shouldView) {
+            window.location.href = '/';
             return;
         }
     }

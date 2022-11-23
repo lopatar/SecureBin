@@ -31,6 +31,7 @@ final class Paste
 	{
 		if ($password !== '')
 		{
+			echo "password: $password !!!!!!!!!!!";
 			$password = password_hash($password, PASSWORD_DEFAULT);
 		}
 
