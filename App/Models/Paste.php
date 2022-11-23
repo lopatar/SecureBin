@@ -34,7 +34,7 @@ final class Paste
 			$password = password_hash($password, PASSWORD_DEFAULT);
 		}
 
-		echo "<script>alert($burnOnRead)</script>"
+		echo "<script>alert($burnOnRead)</script>";
 
 		$urlCode = self::generateUrlCode();
 		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, intval($burnOnRead)], 'sssi');
