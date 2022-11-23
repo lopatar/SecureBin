@@ -23,7 +23,7 @@ final class Api
 			return $response;
 		}
 
-		$response->write($burnOnRead);
+		$response->write((string)boolval($burnOnRead));
 		return $response;
 
 		if (!ctype_xdigit($cipherText)) {
