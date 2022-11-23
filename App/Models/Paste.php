@@ -34,11 +34,11 @@ final class Paste
 			$password = password_hash($password, PASSWORD_DEFAULT);
 		}
 
-		echo "<script>alert($burnOnRead)</script>";
+		$burnOnRead = ($burnOnRead === 1) ? 1 : 0;
 
 		$urlCode = self::generateUrlCode();
-		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, intval($burnOnRead)], 'sssi');
-		return new self($urlCode, $cipherText, $burnOnRead, $password);
+		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, $burnOnRead], 'sssi');
+		return new self($urlCode, $cipherText, (bool)$burnOnRead, $password);
 	}
 
 	private static function generateUrlCode(): string
