@@ -73,7 +73,7 @@ final class Paste
 	{
 		return json_encode([
 			'urlCode' => $this->urlCode,
-			'burnOnRead' => $this->urlCode,
+			'burnOnRead' => $this->burnOnRead,
 			'passwordProtected' => $this->isPasswordProtected()
 		]);
 	}
