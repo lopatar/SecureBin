@@ -35,7 +35,7 @@ final class Paste
 		}
 
 		//casting to int doesnt work, idk why, workaround
-		$burnOnRead = ($burnOnRead) ? 1 : 0;
+		$burnOnRead = ($burnOnRead === 1) ? 1 : 0;
 
 		$urlCode = self::generateUrlCode();
 		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, $burnOnRead], 'sssi');
