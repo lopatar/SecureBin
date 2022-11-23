@@ -35,7 +35,7 @@ final class Paste
 		}
 
 		$urlCode = self::generateUrlCode();
-		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, intval($burnOnRead), $password], 'ssis');
+		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, intval($burnOnRead)], 'ssis');
 		return new self($urlCode, $cipherText, $burnOnRead, $password);
 	}
 
