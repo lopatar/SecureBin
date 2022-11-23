@@ -23,8 +23,7 @@ final class Api
 			return $response;
 		}
 
-		$response->write((string)boolval($burnOnRead));
-		return $response;
+		$burnOnReadBool = boolval($burnOnRead);
 
 		if (!ctype_xdigit($cipherText)) {
 			$response->setStatusCode(StatusCode::BAD_REQUEST);
@@ -32,7 +31,7 @@ final class Api
 			return $response;
 		}
 
-		$paste = Paste::insert($cipherText, $burnOnRead, $password);
+		$paste = Paste::insert($cipherText, $burnOnReadBool, $password);
 		$response->write(self::buildResponse([
 			'url' => $paste->getPublicUrl($request)
 		]));
