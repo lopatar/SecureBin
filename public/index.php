@@ -14,8 +14,12 @@ $htmlHeader = new HtmlHeader();
 $app->view('/', 'Home.html')
 	->addMiddleware($htmlHeader);
 
-$app->get('/{urlCode}', 'Api::decrypt')
+$app->get('/{urlCode}', 'Api::viewPaste')
 	->addMiddleware($htmlHeader)
+	?->whereParam('urlCode')
+	->setLimit(16, 16);
+
+$app->post('/api/cipherText/{urlCode}', 'Api::getCipherText')
 	?->whereParam('urlCode')
 	->setLimit(16, 16);
 

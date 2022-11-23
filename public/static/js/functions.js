@@ -11,6 +11,8 @@ function generateKey() {
 
 function savePaste() {
     let pasteContent = document.getElementById('pasteContent').value;
+    const burnOnRead = document.getElementById('burnOnRead').checked;
+    const password = document.getElementById('pastePassword').value;
 
     if (pasteContent.length === 0) {
         alert('You must supply content!');
@@ -41,7 +43,9 @@ function savePaste() {
             'Accept': 'application/json'
         },
         body: new URLSearchParams({
-            'cipherText': encrypted
+            'cipherText': encrypted,
+            'burnOnRead': burnOnRead,
+            'password': password
         })
     }).then(response => response.json()).then(data => {
         if (data.error) {
@@ -74,19 +78,47 @@ function savePaste() {
 }
 
 function decryptPaste() {
-    let cipherText = document.getElementById('cipherText').textContent;
-    cipherText = aesjs.utils.hex.toBytes(cipherText);
+    const pasteMetadata = JSON.parse(document.getElementById('pasteMetadata').textContent.trim());
 
-    let key = window.location.hash.substring(1);
-    key = aesjs.utils.hex.toBytes(key);
+    if (pasteMetadata.burnOnRead) {
+        const shouldView = confirm("This paste is set to burn on read, do you want to read it? It won't be able to viewed anymore!");
 
-    try {
-        const aesCtr = new aesjs.ModeOfOperation.ctr(key);
-        let decrypted = aesCtr.decrypt(cipherText);
-        decrypted = aesjs.utils.utf8.fromBytes(decrypted);
-
-        document.getElementById('pasteContent').value = decrypted;
-    } catch {
-        alert('Invalid key provided!');
+        if (!shouldView) {
+            return;
+        }
     }
+
+    let password = '';
+
+    if (pasteMetadata.passwordProtected) {
+        password = prompt("This paste is password protected, please input the password!");
+    }
+
+    fetch('/api/cipherText/' + pasteMetadata.urlCode, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'password': password
+        })
+    }).then(response => response.json()).then(data => {
+        if (data.error) {
+            alert('Error: ' + data.data);
+            return;
+        }
+
+        const cipherText = data.data.cipherText;
+        let key = window.location.hash.substring(1);
+        key = aesjs.utils.hex.toBytes(key);
+
+        try {
+            const aesCtr = new aesjs.ModeOfOperation.ctr(key);
+            let decrypted = aesCtr.decrypt(cipherText);
+            decrypted = aesjs.utils.utf8.fromBytes(decrypted);
+            document.getElementById('pasteContent').value = decrypted;
+        } catch {
+            alert('Invalid key!');
+        }
+    })
 }
