@@ -29,7 +29,10 @@ final class Paste
 
 	public static function insert(string $cipherText, bool $burnOnRead, string $password): self
 	{
-		$password = ($password === '') ? NULL : password_hash($password, PASSWORD_DEFAULT);
+		if ($password !== '')
+		{
+			$password = password_hash($password, PASSWORD_DEFAULT);
+		}
 
 		$urlCode = self::generateUrlCode();
 		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, intval($burnOnRead), $password], 'ssis');
