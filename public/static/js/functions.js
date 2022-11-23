@@ -118,7 +118,8 @@ function decryptPaste() {
             return;
         }
 
-        const cipherText = data.data.cipherText;
+        let cipherText = data.data.cipherText;
+        cipherText = aesjs.utils.hex.toBytes(cipherText);
         let key = window.location.hash.substring(1);
         key = aesjs.utils.hex.toBytes(key);
 
