@@ -31,12 +31,11 @@ final class Paste
 	{
 		if ($password !== '')
 		{
-			echo "password: $password !!!!!!!!!!!";
 			$password = password_hash($password, PASSWORD_DEFAULT);
 		}
 
 		$urlCode = self::generateUrlCode();
-		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, intval($burnOnRead)], 'ssis');
+		Connection::query('INSERT INTO pastes VALUES(?,?,?,?)', [$urlCode, $cipherText, $password, intval($burnOnRead)], 'sssi');
 		return new self($urlCode, $cipherText, $burnOnRead, $password);
 	}
 

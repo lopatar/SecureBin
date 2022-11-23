@@ -12,7 +12,12 @@ function generateKey() {
 function savePaste() {
     let pasteContent = document.getElementById('pasteContent').value;
     const burnOnRead = document.getElementById('burnOnRead').checked;
-    const password = document.getElementById('pastePassword').value;
+    let password = document.getElementById('pastePassword').value;
+
+    if (password === null)
+    {
+        password = '';
+    }
 
     if (pasteContent.length === 0) {
         alert('You must supply content!');
@@ -93,6 +98,10 @@ function decryptPaste() {
 
     if (pasteMetadata.passwordProtected) {
         password = prompt("This paste is password protected, please input the password!");
+
+        if (password === null) {
+            password = '';
+        }
     }
 
     fetch('/api/cipherText/' + pasteMetadata.urlCode, {
