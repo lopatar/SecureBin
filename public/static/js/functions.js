@@ -105,6 +105,10 @@ function decryptPaste() {
         }
     }
 
+    const pasteContentField = document.getElementById('pasteContent');
+
+    pasteContentField.value = 'Fetching...';
+
     fetch('/api/cipherText/' + pasteMetadata.urlCode, {
         method: 'POST',
         headers: {
@@ -128,7 +132,7 @@ function decryptPaste() {
             const aesCtr = new aesjs.ModeOfOperation.ctr(key);
             let decrypted = aesCtr.decrypt(cipherText);
             decrypted = aesjs.utils.utf8.fromBytes(decrypted);
-            document.getElementById('pasteContent').value = decrypted;
+            pasteContentField.value = decrypted;
         } catch {
             alert('Invalid key provided!');
         }
