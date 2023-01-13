@@ -180,6 +180,7 @@ final class Config implements IConfig
 	/**
 	 * Cookie encryption
 	 * Gets whether cookies should be automatically encrypted/decrypted
+	 * <h1><b>If enabled, no session middleware is needed to be added!</b></h1>
 	 * @uses \Sdk\Utils\Encryption\AES, \Sdk\Middleware\Session
 	 */
 	public function isCookieEncryptionEnabled(): bool
