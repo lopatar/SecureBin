@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Sdk\Database\MariaDB\Connection;
 use Sdk\Http\Request;
+use Sdk\Utils\Hashing\PasswordProvider;
 use Sdk\Utils\Random;
 
 final class Paste
@@ -31,7 +32,7 @@ final class Paste
 	{
 		if ($password !== '')
 		{
-			$password = password_hash($password, PASSWORD_DEFAULT);
+			$password = PasswordProvider::getDefaultProvider()->hash($password);
 		}
 
 		$urlCode = self::generateUrlCode();
@@ -59,7 +60,7 @@ final class Paste
 			return true;
 		}
 
-		return password_verify($password, $this->passwordHash);
+		return PasswordProvider::verify($password, $this->passwordHash);
 	}
 
 	public function getPublicUrl(Request $request): string

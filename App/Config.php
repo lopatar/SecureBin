@@ -186,4 +186,20 @@ final class Config implements IConfig
 	{
 		return false;
 	}
+
+	/**
+	 * Default password hashing provider hash algorithm, {@see password_algos()}
+	 */
+	public function getDefaultPasswordProviderHashAlgorithm(): string
+	{
+		return PASSWORD_DEFAULT;
+	}
+
+	/**
+	 * Default password hashing provider hash algorithm options
+	 */
+	public function getDefaultPasswordProviderHashOptions(): array
+	{
+		return ['cost' => 20];
+	}
 }
