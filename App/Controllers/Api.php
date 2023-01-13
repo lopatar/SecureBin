@@ -7,6 +7,7 @@ use App\Models\Paste;
 use Sdk\Http\Entities\StatusCode;
 use Sdk\Http\Request;
 use Sdk\Http\Response;
+use Sdk\Utils\Boolean;
 
 final class Api
 {
@@ -23,7 +24,7 @@ final class Api
 			return $response;
 		}
 
-		$burnOnReadBool = $burnOnRead === 'true';
+        $burnOnRead = Boolean::fromString($burnOnRead);
 
 		if (!ctype_xdigit($cipherText)) {
 			$response->setStatusCode(StatusCode::BAD_REQUEST);
@@ -31,7 +32,7 @@ final class Api
 			return $response;
 		}
 
-		$paste = Paste::insert($cipherText, $burnOnReadBool, $password);
+		$paste = Paste::insert($cipherText, $burnOnRead, $password);
 		$response->write(self::buildResponse([
 			'url' => $paste->getPublicUrl($request)
 		]));

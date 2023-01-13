@@ -89,6 +89,7 @@ function decryptPaste() {
         const shouldView = confirm("This paste is set to burn on read, do you want to read it? It won't be able to viewed anymore!");
 
         if (!shouldView) {
+            window.location.hash = '';
             window.location.href = '/';
             return;
         }
@@ -128,8 +129,8 @@ function decryptPaste() {
             let decrypted = aesCtr.decrypt(cipherText);
             decrypted = aesjs.utils.utf8.fromBytes(decrypted);
             document.getElementById('pasteContent').value = decrypted;
-        } catch (ex) {
-            alert(ex);
+        } catch {
+            alert('Invalid key provided!');
         }
     })
 }
