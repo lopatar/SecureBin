@@ -201,6 +201,6 @@ final class Config implements IConfig
 	 */
 	public function getDefaultPasswordProviderHashOptions(): array
 	{
-		return ['cost' => 20];
+		return ['cost' => 12];
 	}
 }
