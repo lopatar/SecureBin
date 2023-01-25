@@ -7,7 +7,7 @@ Written using own [PHP-SDKv2](https://github.com/lopatar/PHP-SDKv2).
 - Password protection (A password is required to fetch the encrypted data)
 
 # Requirements
-- PHP 8.1
+- PHP 8.2
 - Composer
 - MariaDB/MySQL DB server
 - Web server (routing requests to public/index.php)
