@@ -6,6 +6,9 @@ Written using own [PHP-SDKv2](https://github.com/lopatar/PHP-SDKv2).
 - Burn on read (encrypted pastes get delete from DB after being read)
 - Password protection (A password is required to fetch the encrypted data)
 
+# Try me
+[timer.lopatar.dev](https://timer.lopatar.dev)
+
 # Requirements
 - PHP 8.2
 - Composer
