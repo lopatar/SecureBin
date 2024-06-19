@@ -1,12 +1,31 @@
-function generateKey() {
-    let buf = new Uint8Array(32);
-
+function checkSecureContext() {
     if (!isSecureContext) {
-        return false;
+        alert('Not in secure context!');
+        document.getElementById('createPasteBtn').disabled = true;
     }
+}
 
-    window.crypto.getRandomValues(buf);
-    return buf;
+function generateKey() {
+    window.crypto.subtle.generateKey({
+            name: 'AES-GCM',
+            length: 256,
+        },
+        true,
+        ['encrypt', 'decrypt'],
+    ).then((cryptoKey) => {return cryptoKey});
+
+    return new CryptoKey();
+}
+
+function generateIV()
+{
+    return window.crypto.getRandomValues(new Uint8Array(12));
+}
+
+function encodeText(text)
+{
+    const textEncoder = new TextEncoder();
+    return textEncoder.encode(text);
 }
 
 function savePaste() {
@@ -14,8 +33,7 @@ function savePaste() {
     const burnOnRead = document.getElementById('burnOnRead').checked;
     let password = document.getElementById('pastePassword').value;
 
-    if (password === null)
-    {
+    if (password === null) {
         password = '';
     }
 
@@ -24,20 +42,16 @@ function savePaste() {
         return;
     }
 
-    pasteContent = aesjs.utils.utf8.toBytes(pasteContent);
+    pasteContent = encodeText(pasteContent);
 
-    const keyBuf = generateKey();
+    const cryptoKey = generateKey();
+    const cryptoIV = generateIV();
 
-    if (keyBuf === false) {
-        alert('Could not generate key, not in secure context!!');
-        return;
-    }
-
-    const keyHex = aesjs.utils.hex.fromBytes(keyBuf);
-    const aesCtr = new aesjs.ModeOfOperation.ctr(keyBuf);
-
-    let encrypted = aesCtr.encrypt(pasteContent);
-    encrypted = aesjs.utils.hex.fromBytes(encrypted);
+    const encrypted = window.crypto.subtle.encrypt(
+        {name: 'AES-GCM', iv: cryptoIV},
+        cryptoKey,
+        pasteContent
+    );
 
     document.getElementById('createPasteBtn').disabled = true;
 
@@ -73,11 +87,8 @@ function savePaste() {
             }).then(response => response.text()).then(link => {
                 navigator.clipboard.writeText(link).then(() => {
                     alert('Shortened link has been copied to clipboard!');
-                    window.location.href = url;
                 });
             });
-        } else {
-            window.location.href = url;
         }
     })
 }
