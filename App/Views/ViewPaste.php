@@ -20,7 +20,7 @@ $paste = $this->getProperty('paste');
 <div>
     <textarea cols="70" rows="40" id="pasteContent" required></textarea>
 </div>
-<p style="font-weight: bold">Encryption is handled using AES-256-CTR & cryptographically safe key generation</p>
+<p style="font-weight: bold">Confidentiality is handled using authenticated AES-256-GCM encryption</p>
 </body>
 <footer>
     <a href="https://github.com/lopatar/SecureBin" target="_blank">Source code</a>
