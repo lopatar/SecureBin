@@ -61,7 +61,12 @@ function sendToServer(encryptedData, burnOnRead, password)
     })
 }
 
-function processJsonData(jsonData)
+function validateJsonData(jsonData)
+{
+    return jsonData.error === false;
+}
+
+function uploadPostProcessing(jsonData)
 {
 
 }
@@ -88,10 +93,16 @@ function savePaste() {
            encryptData(pasteContent, encryptionKey, encryptionIV)
                .then(encryptedData => {
                     sendToServer(encryptedData, burnOnRead, password)
-                        .then(httpResponse => processJsonData(httpResponse.json())).then(() => {
+                        .then(httpResponse => httpResponse.json())
+                        .then(httpJson => {
+                            if (!validateJsonData(httpJson)) {
+                                alert('Failed to upload encrypted data: ' + httpJson.data);
+                                return;
+                            }
 
-               });
-           });
+                            uploadPostProcessing(httpJson);
+                        });
+               })
     });
 
     fetch('/api/save', {
