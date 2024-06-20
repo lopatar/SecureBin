@@ -56,13 +56,20 @@ function sendToServer(encryptedData, burnOnRead, password) {
     })
 }
 
-function validateJsonData(jsonData) {
-    return jsonData.error === false;
+function postProcessLink(jsonData, encryptionKey, encryptionIV)
+{
+    encryptionKey = bufToText(encryptionKey);
+    encryptionIV = bufToText(encryptionIV);
+
+    return "";
 }
 
 function savePaste() {
     const pasteContent = document.getElementById('pasteContent').value;
+
     const burnOnRead = document.getElementById('burnOnRead').checked;
+    const shortenUrl = document.getElementById('shortenUrl').checked;
+
     let password = document.getElementById('pastePassword').value;
 
     if (password === null) {
@@ -89,31 +96,17 @@ function savePaste() {
                             return;
                         }
 
-                        const pasteUrl = httpJson.data.url + bufToText(encryptionIV) + '--' + bufToText(encryptionKey);
+                        postProcessLink(httpJson, encryptionKey, encryptionIV).then(pasteUrl => {
+                            navigator.clipboard.writeText(pasteUrl).then(text => {
+                                alert('Link has been copied to clipboard!');
+                            });
+                        });
                     }
-            )
+                )
             })
     });
 
-    fetch('/api/save', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json'
-        },
-        body: new URLSearchParams({
-            'cipherText': encrypted,
-            'burnOnRead': burnOnRead,
-            'password': password
-        })
-    }).then(response => response.json()).then(data => {
-        if (data.error) {
-            alert('Error occurred: ' + data.data);
-            return;
-        }
-
-        const url = data.data.url +
-        const shortenUrl = document.getElementById('shortenUrl').checked;
+   /* const shortenUrl = document.getElementById('shortenUrl').checked;
 
         if (shortenUrl) {
             fetch('https://s.lopatar.dev/api/shorten', {
@@ -130,7 +123,7 @@ function savePaste() {
                 });
             });
         }
-    })
+    })*/
 }
 
 function decryptPaste() {
