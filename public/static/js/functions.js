@@ -5,16 +5,20 @@ function checkSecureContext() {
     }
 }
 
+function encodeText(text)
+{
+    const textEncoder = new TextEncoder();
+    return textEncoder.encode(text);
+}
+
 function generateKey() {
-    window.crypto.subtle.generateKey({
+    return window.crypto.subtle.generateKey({
             name: 'AES-GCM',
             length: 256,
         },
         true,
         ['encrypt', 'decrypt'],
-    ).then((cryptoKey) => {return cryptoKey});
-
-    return new CryptoKey();
+    );
 }
 
 function generateIV()
@@ -22,14 +26,19 @@ function generateIV()
     return window.crypto.getRandomValues(new Uint8Array(12));
 }
 
-function encodeText(text)
+function encryptData(data, encryptionKey, encryptionIV)
 {
-    const textEncoder = new TextEncoder();
-    return textEncoder.encode(text);
+    data = encodeText(data);
+
+    return window.crypto.subtle.encrypt(
+        {name: 'AES-GCM', iv: encryptionIV},
+        encryptionKey,
+        data
+    );
 }
 
 function savePaste() {
-    let pasteContent = document.getElementById('pasteContent').value;
+    const pasteContent = document.getElementById('pasteContent').value;
     const burnOnRead = document.getElementById('burnOnRead').checked;
     let password = document.getElementById('pastePassword').value;
 
@@ -42,18 +51,15 @@ function savePaste() {
         return;
     }
 
-    pasteContent = encodeText(pasteContent);
-
-    const cryptoKey = generateKey();
-    const cryptoIV = generateIV();
-
-    const encrypted = window.crypto.subtle.encrypt(
-        {name: 'AES-GCM', iv: cryptoIV},
-        cryptoKey,
-        pasteContent
-    );
-
     document.getElementById('createPasteBtn').disabled = true;
+
+    generateKey().then(function(encryptionKey) {
+           const encryptionIV = generateIV();
+
+           encryptData(pasteContent, encryptionKey, encryptionIV).then(function(encryptedData) {
+
+           });
+    });
 
     fetch('/api/save', {
         method: 'POST',
