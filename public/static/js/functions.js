@@ -5,14 +5,12 @@ function checkSecureContext() {
     }
 }
 
-function textToBuf(text)
-{
+function textToBuf(text) {
     const textEncoder = new TextEncoder();
     return textEncoder.encode(text);
 }
 
-function bufToText(buf)
-{
+function bufToText(buf) {
     const textDecoder = new TextDecoder();
     return textDecoder.decode(buf);
 }
@@ -27,13 +25,11 @@ function generateKey() {
     );
 }
 
-function generateIV()
-{
+function generateIV() {
     return window.crypto.getRandomValues(new Uint8Array(12));
 }
 
-function encryptData(data, encryptionKey, encryptionIV)
-{
+function encryptData(data, encryptionKey, encryptionIV) {
     data = textToBuf(data);
 
     return window.crypto.subtle.encrypt(
@@ -43,8 +39,7 @@ function encryptData(data, encryptionKey, encryptionIV)
     );
 }
 
-function sendToServer(encryptedData, burnOnRead, password)
-{
+function sendToServer(encryptedData, burnOnRead, password) {
     encryptedData = bufToText(encryptedData);
 
     return fetch('/api/save', {
@@ -61,14 +56,8 @@ function sendToServer(encryptedData, burnOnRead, password)
     })
 }
 
-function validateJsonData(jsonData)
-{
+function validateJsonData(jsonData) {
     return jsonData.error === false;
-}
-
-function uploadPostProcessing(jsonData)
-{
-
 }
 
 function savePaste() {
@@ -87,22 +76,23 @@ function savePaste() {
 
     document.getElementById('createPasteBtn').disabled = true;
 
-    generateKey().then(function(encryptionKey) {
-           const encryptionIV = generateIV();
+    generateKey().then(encryptionKey => {
+        const encryptionIV = generateIV();
 
-           encryptData(pasteContent, encryptionKey, encryptionIV)
-               .then(encryptedData => {
-                    sendToServer(encryptedData, burnOnRead, password)
-                        .then(httpResponse => httpResponse.json())
-                        .then(httpJson => {
-                            if (!validateJsonData(httpJson)) {
-                                alert('Failed to upload encrypted data: ' + httpJson.data);
-                                return;
-                            }
+        encryptData(pasteContent, encryptionKey, encryptionIV)
+            .then(encryptedData => {
+                sendToServer(encryptedData, burnOnRead, password)
+                    .then(httpResponse => httpResponse.json())
+                    .then(httpJson => {
+                        if (httpJson.error) {
+                            alert('Error occured: ' + httpJson.error);
+                            return;
+                        }
 
-                            uploadPostProcessing(httpJson);
-                        });
-               })
+                        const pasteUrl = httpJson.data.url + bufToText(encryptionIV) + '--' + bufToText(encryptionKey);
+                    }
+            )
+            })
     });
 
     fetch('/api/save', {
@@ -122,7 +112,7 @@ function savePaste() {
             return;
         }
 
-        const url = data.data.url + keyHex;
+        const url = data.data.url +
         const shortenUrl = document.getElementById('shortenUrl').checked;
 
         if (shortenUrl) {
