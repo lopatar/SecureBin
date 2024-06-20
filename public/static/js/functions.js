@@ -5,10 +5,16 @@ function checkSecureContext() {
     }
 }
 
-function encodeText(text)
+function textToBuf(text)
 {
     const textEncoder = new TextEncoder();
     return textEncoder.encode(text);
+}
+
+function bufToText(buf)
+{
+    const textDecoder = new TextDecoder();
+    return textDecoder.decode(buf);
 }
 
 function generateKey() {
@@ -28,13 +34,36 @@ function generateIV()
 
 function encryptData(data, encryptionKey, encryptionIV)
 {
-    data = encodeText(data);
+    data = textToBuf(data);
 
     return window.crypto.subtle.encrypt(
         {name: 'AES-GCM', iv: encryptionIV},
         encryptionKey,
         data
     );
+}
+
+function sendToServer(encryptedData, burnOnRead, password)
+{
+    encryptedData = bufToText(encryptedData);
+
+    return fetch('/api/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+        },
+        body: new URLSearchParams({
+            'cipherText': encryptedData,
+            'burnOnRead': burnOnRead,
+            'password': password
+        })
+    })
+}
+
+function processJsonData(jsonData)
+{
+
 }
 
 function savePaste() {
@@ -56,8 +85,12 @@ function savePaste() {
     generateKey().then(function(encryptionKey) {
            const encryptionIV = generateIV();
 
-           encryptData(pasteContent, encryptionKey, encryptionIV).then(function(encryptedData) {
+           encryptData(pasteContent, encryptionKey, encryptionIV)
+               .then(encryptedData => {
+                    sendToServer(encryptedData, burnOnRead, password)
+                        .then(httpResponse => processJsonData(httpResponse.json())).then(() => {
 
+               });
            });
     });
 
