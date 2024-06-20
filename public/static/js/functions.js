@@ -56,12 +56,28 @@ function sendToServer(encryptedData, burnOnRead, password) {
     })
 }
 
-function postProcessLink(jsonData, encryptionKey, encryptionIV)
+function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl)
 {
     encryptionKey = bufToText(encryptionKey);
     encryptionIV = bufToText(encryptionIV);
 
-    return "";
+    const url = jsonData.data.url + encryptionKey + "--" + encryptionIV;
+
+    if (!shortenUrl) {
+        return url;
+    }
+
+    fetch('https://s.lopatar.dev/api/shorten', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            'link': url
+        })
+    }).then(shortenedUrl => shortenedUrl.text()).then((shortenedUrl) => {
+        return shortenedUrl;
+    })
 }
 
 function savePaste() {
@@ -96,7 +112,7 @@ function savePaste() {
                             return;
                         }
 
-                        postProcessLink(httpJson, encryptionKey, encryptionIV).then(pasteUrl => {
+                        postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl).then(pasteUrl => {
                             navigator.clipboard.writeText(pasteUrl).then(text => {
                                 alert('Link has been copied to clipboard!');
                             });
@@ -105,25 +121,6 @@ function savePaste() {
                 )
             })
     });
-
-   /* const shortenUrl = document.getElementById('shortenUrl').checked;
-
-        if (shortenUrl) {
-            fetch('https://s.lopatar.dev/api/shorten', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    'link': url
-                })
-            }).then(response => response.text()).then(link => {
-                navigator.clipboard.writeText(link).then(() => {
-                    alert('Shortened link has been copied to clipboard!');
-                });
-            });
-        }
-    })*/
 }
 
 function decryptPaste() {
