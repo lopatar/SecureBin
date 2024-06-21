@@ -10,11 +10,6 @@ function textToBuf(text) {
     return textEncoder.encode(text);
 }
 
-function bufToB64(buf) {
-    const textDecoder = new TextDecoder()
-    return atob(textDecoder.decode(buf));
-}
-
 function generateEncryptionKey() {
     return window.crypto.subtle.generateKey(
         {
@@ -64,8 +59,8 @@ function sendToServer(encryptedData, burnOnRead, password) {
 
 function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
     exportEncryptionKey(encryptionKey).then(rawEncryptionKey => {
-        rawEncryptionKey = bufToB64(rawEncryptionKey);
-        encryptionIV = bufToB64(encryptionIV);
+        rawEncryptionKey = base64ArrayBuffer(rawEncryptionKey);
+        encryptionIV = base64ArrayBuffer(encryptionIV);
 
         const url = jsonData.url.data.url + rawEncryptionKey + '--' + encryptionKey;
 
