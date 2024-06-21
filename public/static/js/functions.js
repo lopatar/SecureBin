@@ -10,8 +10,8 @@ function textToBuf(text) {
     return textEncoder.encode(text);
 }
 
-function bufToHex(buf) {
-    return Array.from(buf).map((b) => b.toString(16).padStart(2, "0")).join("");
+function bufToB64(buf) {
+    return atob(buf);
 }
 
 function generateEncryptionKey() {
@@ -44,7 +44,8 @@ function encryptData(data, encryptionKey, encryptionIV) {
 }
 
 function sendToServer(encryptedData, burnOnRead, password) {
-    encryptedData = bufToHex(encryptedData);
+    console.log("sendToServer");
+    console.log(encryptedData);
 
     return fetch('/api/save', {
         method: 'POST',
@@ -62,8 +63,8 @@ function sendToServer(encryptedData, burnOnRead, password) {
 
 function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
     exportEncryptionKey(encryptionKey).then(rawEncryptionKey => {
-        rawEncryptionKey = bufToHex(rawEncryptionKey);
-        encryptionIV = bufToHex(encryptionIV);
+        rawEncryptionKey = bufToB64(rawEncryptionKey);
+        encryptionIV = bufToB64(encryptionIV);
 
         const url = jsonData.url.data.url + rawEncryptionKey + '--' + encryptionKey;
 
