@@ -15,14 +15,19 @@ function bufToText(buf) {
     return textDecoder.decode(buf);
 }
 
-function generateKey() {
-    return window.crypto.subtle.generateKey({
+function generateEncryptionKey() {
+    return window.crypto.subtle.generateKey(
+        {
             name: 'AES-GCM',
             length: 256,
         },
         true,
         ['encrypt', 'decrypt'],
     );
+}
+
+function exportEncryptionKey(encryptionKey) {
+    return window.crypto.subtle.exportKey('raw', encryptionKey);
 }
 
 function generateIV() {
@@ -35,7 +40,7 @@ function encryptData(data, encryptionKey, encryptionIV) {
     return window.crypto.subtle.encrypt(
         {name: 'AES-GCM', iv: encryptionIV},
         encryptionKey,
-        data
+        data,
     );
 }
 
@@ -77,7 +82,9 @@ function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl)
         })
     }).then(shortenedUrl => shortenedUrl.text()).then((shortenedUrl) => {
         return shortenedUrl;
-    })
+    });
+
+    return '';
 }
 
 function savePaste() {
@@ -99,7 +106,7 @@ function savePaste() {
 
     document.getElementById('createPasteBtn').disabled = true;
 
-    generateKey().then(encryptionKey => {
+    generateEncryptionKey().then(encryptionKey => {
         const encryptionIV = generateIV();
 
         encryptData(pasteContent, encryptionKey, encryptionIV)
@@ -127,7 +134,7 @@ function decryptPaste() {
     const pasteMetadata = JSON.parse(document.getElementById('pasteMetadata').textContent.trim());
 
     if (pasteMetadata.burnOnRead) {
-        const shouldView = confirm("This paste is set to burn on read, do you want to read it? It won't be able to viewed anymore!");
+        const shouldView = confirm('This paste is set to burn on read, do you want to read it? It won\'t be able to viewed anymore!');
 
         if (!shouldView) {
             window.location.hash = '';
@@ -139,7 +146,7 @@ function decryptPaste() {
     let password = '';
 
     if (pasteMetadata.passwordProtected) {
-        password = prompt("This paste is password protected, please input the password!");
+        password = prompt('This paste is password protected, please input the password!');
 
         if (password === null) {
             password = '';
