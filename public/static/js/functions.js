@@ -61,27 +61,28 @@ function sendToServer(encryptedData, burnOnRead, password) {
     })
 }
 
-function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl)
-{
-    encryptionKey = bufToText(encryptionKey);
-    encryptionIV = bufToText(encryptionIV);
+function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
+    exportEncryptionKey(encryptionKey).then(rawEncryptionKey => {
+        rawEncryptionKey = bufToText(rawEncryptionKey);
+        encryptionIV = bufToText(encryptionIV);
 
-    const url = jsonData.data.url + encryptionKey + "--" + encryptionIV;
+        const url = jsonData.url.data.url + rawEncryptionKey + '--' + encryptionKey;
 
-    if (!shortenUrl) {
-        return url;
-    }
+        if (!shortenUrl) {
+            return url;
+        }
 
-    fetch('https://s.lopatar.dev/api/shorten', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-            'link': url
-        })
-    }).then(shortenedUrl => shortenedUrl.text()).then((shortenedUrl) => {
-        return shortenedUrl;
+        fetch('https://s.lopatar.dev/api/shorten', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'link': url
+            })
+        }).then(shortenedUrl => shortenedUrl.text()).then((shortenedUrl) => {
+            return shortenedUrl;
+        });
     });
 
     return '';
@@ -114,18 +115,18 @@ function savePaste() {
                 sendToServer(encryptedData, burnOnRead, password)
                     .then(httpResponse => httpResponse.json())
                     .then(httpJson => {
-                        if (httpJson.error) {
-                            alert('Error occured: ' + httpJson.error);
-                            return;
-                        }
+                            if (httpJson.error) {
+                                alert('Error occured: ' + httpJson.error);
+                                return;
+                            }
 
-                        postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl).then(pasteUrl => {
-                            navigator.clipboard.writeText(pasteUrl).then(text => {
-                                alert('Link has been copied to clipboard!');
+                            postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl).then(pasteUrl => {
+                                navigator.clipboard.writeText(pasteUrl).then(text => {
+                                    alert('Link has been copied to clipboard!');
+                                });
                             });
-                        });
-                    }
-                )
+                        }
+                    )
             })
     });
 }

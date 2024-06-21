@@ -12,16 +12,16 @@ $app = new App($config);
 $htmlHeader = new HtmlHeader();
 
 $app->view('/', 'Home.html')
-	->addMiddleware($htmlHeader);
+    ->addMiddleware($htmlHeader);
 
 $app->get('/{urlCode}', 'Api::viewPaste')
-	->addMiddleware($htmlHeader)
-	?->whereParam('urlCode')
-	->setLimit(16, 16);
+    ->addMiddleware($htmlHeader)
+    ?->whereParam('urlCode')
+    ->setLimit(16, 16);
 
 $app->post('/api/cipherText/{urlCode}', 'Api::getCipherText')
-	?->whereParam('urlCode')
-	->setLimit(16, 16);
+    ?->whereParam('urlCode')
+    ->setLimit(16, 16);
 
 $app->post('/api/save', 'Api::save');
 

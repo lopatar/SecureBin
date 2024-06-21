@@ -11,10 +11,10 @@ use Sdk\Render\View;
 final class HtmlHeader implements IMiddleware
 {
 
-	public function execute(Request $request, Response $response, array $args): Response
-	{
-		$view = new View('HtmlHeader.html');
-		$view->render();
-		return $response;
-	}
+    public function execute(Request $request, Response $response, array $args): Response
+    {
+        $view = new View('HtmlHeader.html');
+        $view->render();
+        return $response;
+    }
 }
