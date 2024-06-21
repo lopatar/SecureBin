@@ -11,7 +11,8 @@ function textToBuf(text) {
 }
 
 function bufToB64(buf) {
-    return atob(buf);
+    const textDecoder = new TextDecoder()
+    return atob(textDecoder.decode(buf));
 }
 
 function generateEncryptionKey() {
