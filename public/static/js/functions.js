@@ -1,3 +1,5 @@
+import {bytesToBase64} from "./b64";
+
 function checkSecureContext() {
     if (!isSecureContext) {
         alert('Not in secure context!');
@@ -8,6 +10,12 @@ function checkSecureContext() {
 function textToBuf(text) {
     const textEncoder = new TextEncoder();
     return textEncoder.encode(text);
+}
+
+function bufToBase64(buf)
+{
+    const bufUint = new Uint8Array(buf);
+    return bytesToBase64(bufUint);
 }
 
 function generateEncryptionKey() {
