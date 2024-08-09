@@ -1,4 +1,3 @@
-//atoa, btoa is not useful in this case, borrowed from StackOverflow and edited a little to meet nowadays standards
 const Base64 = {
     _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", encode: function (e) {
         let t = "";
@@ -63,15 +62,19 @@ const Base64 = {
         }
         return t
     }, _utf8_decode: function (e) {
+        let c2;
         let t = "";
         let n = 0;
-        let r = c1 = c2 = 0;
+        let c1;
+        let r = c1 = 0;
+        let c3;
         while (n < e.length) {
             r = e.charCodeAt(n);
             if (r < 128) {
                 t += String.fromCharCode(r);
                 n++
-            } else if (r > 191 && r < 224) {
+            } else
+            if (r > 191 && r < 224) {
                 c2 = e.charCodeAt(n + 1);
                 t += String.fromCharCode((r & 31) << 6 | c2 & 63);
                 n += 2
@@ -93,6 +96,16 @@ const textDecoder = new TextDecoder();
 // TODO: Empty password return
 // TODO: Decryption
 
+function ArrayBase64Encode(data) {
+    const arrayBufferString = textDecoder.decode(data);
+    return Base64.encode(arrayBufferString);
+}
+
+function ArrayBase64Decode(data) {
+    const base64DecodedData = Base64.decode(data);
+    return textEncoder.encode(base64DecodedData);
+}
+
 function checkSecureContext() {
     if (!isSecureContext) {
         alert('Not in secure context!');
@@ -111,17 +124,12 @@ function generateEncryptionKey() {
     );
 }
 
-function exportEncryptionKey(encryptionKey) {
-    return window.crypto.subtle.exportKey('raw', encryptionKey).then(exportedEncryptionKey => {
-        return exportedEncryptionKey;
-    });
-}
-
 function generateIV() {
     return window.crypto.getRandomValues(new Uint8Array(12));
 }
 
 function encryptData(data, encryptionKey, encryptionIV) {
+    data = textEncoder.encode(data);
     return window.crypto.subtle.encrypt(
         {name: 'AES-GCM', iv: encryptionIV},
         encryptionKey,
@@ -129,11 +137,11 @@ function encryptData(data, encryptionKey, encryptionIV) {
     );
 }
 
-function ArrayBase64Encode(data) {
-    const arrayBufferString = textDecoder.decode(data);
-    return Base64.encode(arrayBufferString);
+function exportEncryptionKey(encryptionKey) {
+    return window.crypto.subtle.exportKey('raw', encryptionKey).then(exportedEncryptionKey => {
+        return exportedEncryptionKey;
+    });
 }
-
 
 function sendToServer(encryptedData, burnOnRead, password) {
     encryptedData = ArrayBase64Encode(encryptedData);
@@ -157,7 +165,7 @@ function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
         const encodedEncryptionKey = ArrayBase64Encode(rawEncryptionKey);
         const encodedEncryptionIV = ArrayBase64Encode(encryptionIV);
 
-        const url = jsonData.url.data.url + encodedEncryptionKey + '--' + encodedEncryptionIV;
+        const url = jsonData.url.data.url + encodedEncryptionKey + '-' + encodedEncryptionIV;
 
         if (!shortenUrl) {
             return url;
@@ -180,7 +188,7 @@ function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
 }
 
 function savePaste() {
-    const pasteContent = document.getElementById('pasteContent').value;
+    let pasteContent = document.getElementById('pasteContent').value;
 
     const burnOnRead = document.getElementById('burnOnRead').checked;
     const shortenUrl = document.getElementById('shortenUrl').checked;
@@ -200,6 +208,7 @@ function savePaste() {
 
     generateEncryptionKey().then(encryptionKey => {
         const encryptionIV = generateIV();
+
 
         encryptData(pasteContent, encryptionKey, encryptionIV)
             .then(encryptedData => {
@@ -263,16 +272,22 @@ function decryptPaste() {
             return;
         }
 
-        let cipherText = data.data.cipherText;
-        cipherText = aesjs.utils.hex.toBytes(cipherText);
-        let key = window.location.hash.substring(1);
-        key = aesjs.utils.hex.toBytes(key);
+        const cipherText = data.data.cipherText;
+        const cipherTextDecoded = ArrayBase64Decode(cipherText);
+
+        const locationHash = window.location.hash;
+
+        if (locationHash.length === 0 || !locationHash.includes('-')) {
+            alert('Invalid key provided!');
+            return;
+        }
+
+        const clientDecryptionData = window.location.hash.substring(1).split('-');
+        const decryptionKey = clientDecryptionData[0];
+        const decryptionIV = clientDecryptionData[1];
 
         try {
-            const aesCtr = new aesjs.ModeOfOperation.ctr(key);
-            let decrypted = aesCtr.decrypt(cipherText);
-            decrypted = aesjs.utils.utf8.fromBytes(decrypted);
-            pasteContentField.value = decrypted;
+
         } catch {
             alert('Invalid key provided!');
         }
