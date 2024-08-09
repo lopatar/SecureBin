@@ -3,6 +3,10 @@ const Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
+// TODO: Plaintext ArrayBuffer
+// TODO: Empty password return
+// TODO: Decryption
+
 function checkSecureContext() {
     if (!isSecureContext) {
         alert('Not in secure context!');
@@ -65,10 +69,10 @@ function sendToServer(encryptedData, burnOnRead, password) {
 
 function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
     exportEncryptionKey(encryptionKey).then(rawEncryptionKey => {
-        rawEncryptionKey = base64ArrayBuffer(rawEncryptionKey);
-        encryptionIV = base64ArrayBuffer(encryptionIV);
+        const encodedEncryptionKey = ArrayBase64Encode(rawEncryptionKey);
+        const encodedEncryptionIV = ArrayBase64Encode(encryptionIV);
 
-        const url = jsonData.url.data.url + rawEncryptionKey + '--' + encryptionKey;
+        const url = jsonData.url.data.url + encodedEncryptionKey + '--' + encodedEncryptionIV;
 
         if (!shortenUrl) {
             return url;
