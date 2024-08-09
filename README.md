@@ -1,15 +1,15 @@
-# Currently being refactored to use the browser subtle crypto apis instead of bundled aes library
+# Currently, being refactored to use the [browser subtle crypto apis](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/) instead of bundled aes library
 
 # SecureBin
 
-Zero knowledge alternative to pastebin, that delegates crypto operations to the client! Encryption is done
-using [AES-256-CTR](https://github.com/ricmoo/aes-js), keys are generated
+Zero knowledge alternative to pastebin, that delegates crypto operations to the client!
+using [AES-256-GCM](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm), keys are generated
 using [cryptographically secure number generator](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues).
-Written using own [PHP-SDKv2](https://github.com/lopatar/PHP-SDKv2).
+Backend written using own [PHP-SDKv2](https://github.com/lopatar/PHP-SDKv2).
 
 # Features
 
-- Burn on read (encrypted pastes get delete from DB after being read)
+- Burn on read (encrypted pastes get deleted from DB after being read)
 - Password protection (A password is required to fetch the encrypted data)
 
 # Try me
