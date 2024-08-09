@@ -39,9 +39,15 @@ function encryptData(data, encryptionKey, encryptionIV) {
     );
 }
 
+function ArrayBase64Encode(data)
+{
+    const arrayBufferString = textDecoder.decode(data);
+    return Base64.encode(arrayBufferString);
+}
+
+
 function sendToServer(encryptedData, burnOnRead, password) {
-    const encryptedDataString = textDecoder.decode(encryptedData);
-    const base64EncryptedData = Base64.encode(encryptedDataString);
+    encryptedData = ArrayBase64Encode(encryptedData);
 
     return fetch('/api/save', {
         method: 'POST',
@@ -50,7 +56,7 @@ function sendToServer(encryptedData, burnOnRead, password) {
             'Accept': 'application/json'
         },
         body: new URLSearchParams({
-            'cipherText': base64EncryptedData,
+            'cipherText': encryptedData,
             'burnOnRead': burnOnRead,
             'password': password
         })
