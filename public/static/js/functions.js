@@ -165,7 +165,7 @@ function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
         const encodedEncryptionKey = ArrayBase64Encode(rawEncryptionKey);
         const encodedEncryptionIV = ArrayBase64Encode(encryptionIV);
 
-        const url = jsonData.url.data.url.concat(encodedEncryptionKey, '-', encodedEncryptionIV);
+        const url = jsonData.data.url.concat(encodedEncryptionKey, '-', encodedEncryptionIV);
 
         if (!shortenUrl) {
             return url;
@@ -209,21 +209,19 @@ function savePaste() {
     generateEncryptionKey().then(encryptionKey => {
         const encryptionIV = generateIV();
 
-
         encryptData(pasteContent, encryptionKey, encryptionIV)
             .then(encryptedData => {
                 sendToServer(encryptedData, burnOnRead, password)
                     .then(httpResponse => httpResponse.json())
                     .then(httpJson => {
                             if (httpJson.error) {
-                                alert('Error occured: ' + httpJson.error);
+                                alert('Error occurred: ' + httpJson.error);
                                 return;
                             }
 
-                            postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl).then(pasteUrl => {
-                                navigator.clipboard.writeText(pasteUrl).then(() => {
-                                    alert('Link has been copied to clipboard!');
-                                });
+                            const postProcessedLink = postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl);
+                            window.location.clipboard.writeText(postProcessedLink).then(() => {
+                                alert('Shortened url has been copied to clipboard');
                             });
                         }
                     )
