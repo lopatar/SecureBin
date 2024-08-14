@@ -165,7 +165,7 @@ function postProcessLink(jsonData, encryptionKey, encryptionIV, shortenUrl) {
         const encodedEncryptionKey = ArrayBase64Encode(rawEncryptionKey);
         const encodedEncryptionIV = ArrayBase64Encode(encryptionIV);
 
-        const url = jsonData.url.data.url + encodedEncryptionKey + '-' + encodedEncryptionIV;
+        const url = jsonData.url.data.url.concat(encodedEncryptionKey, '-', encodedEncryptionIV);
 
         if (!shortenUrl) {
             return url;
