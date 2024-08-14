@@ -268,6 +268,7 @@ function decryptPaste() {
         })
     }).then(response => response.json()).then(data => {
         if (data.error) {
+            pasteContentField.value = 'Error occurred';
             alert('Error: ' + data.data);
             return;
         }
@@ -278,7 +279,8 @@ function decryptPaste() {
         const locationHash = window.location.hash;
 
         if (locationHash.length === 0 || !locationHash.includes('-')) {
-            alert('Invalid key provided!');
+            pasteContentField.value = 'Error occurred'
+            alert('Invalid decryption data provided');
             return;
         }
 
@@ -289,6 +291,7 @@ function decryptPaste() {
         try {
 
         } catch {
+            pasteContentField.value = 'Error occured';
             alert('Invalid key provided!');
         }
     })
