@@ -222,6 +222,7 @@ function savePaste() {
                             const postProcessedLink = postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl);
                             navigator.clipboard.writeText(postProcessedLink).then(() => {
                                 alert('Shortened url has been copied to clipboard');
+                                window.location.href = postProcessedLink;
                             });
                         }
                     )
