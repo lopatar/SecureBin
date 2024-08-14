@@ -220,7 +220,7 @@ function savePaste() {
                             }
 
                             const postProcessedLink = postProcessLink(httpJson, encryptionKey, encryptionIV, shortenUrl);
-                            window.location.clipboard.writeText(postProcessedLink).then(() => {
+                            navigator.clipboard.writeText(postProcessedLink).then(() => {
                                 alert('Shortened url has been copied to clipboard');
                             });
                         }
