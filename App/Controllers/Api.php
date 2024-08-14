@@ -26,12 +26,6 @@ final class Api
 
         $burnOnRead = Boolean::fromString($burnOnRead);
 
-        if (!ctype_xdigit($cipherText)) {
-            $response->setStatusCode(StatusCode::BAD_REQUEST);
-            $response->write(self::buildResponse('Invalid data format', true));
-            return $response;
-        }
-
         $paste = Paste::insert($cipherText, $burnOnRead, $password);
         $response->write(self::buildResponse([
             'url' => $paste->getPublicUrl($request)
