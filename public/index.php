@@ -6,13 +6,12 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Config;
 use App\Middleware\HtmlHeader;
 use Sdk\App;
+use Sdk\Middleware\CSRF;
 
 $config = new Config();
 $app = new App($config);
 $htmlHeader = new HtmlHeader();
-
-$app->view('/', 'Home.html')
-    ->addMiddleware($htmlHeader);
+$csrfMiddleware = new CSRF($config);
 
 $app->get('/{urlCode}', 'Api::viewPaste')
     ->addMiddleware($htmlHeader)

@@ -8,7 +8,7 @@
     }
   },
   "require": {
-    "lopatar/php-sdkv2": "^2.7",
+    "lopatar/php-sdkv2": "v3.0",
     "ext-ctype": "*"
   },
   "license": "WTFPL",

@@ -1,4 +1,6 @@
-# Currently, being refactored to use the [browser subtle crypto apis](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/) instead of bundled aes library
+# Currently, being refactored to use the [browser subtle crypto apis](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/) instead of bundled aes library.
+
+# ** FUCK JAVASCRIPT **
 
 # SecureBin
 
