@@ -109,25 +109,49 @@ async function savePaste() {
         });
 }
 
-function decryptPaste()
-{
+async function decryptPaste() {
     const pasteMetadata = document.getElementById("pasteMetadata").json();
-    const urlCode = pasteMetadata.urlCode;
-    const burnOnRead = pasteMetadata.burnOnRead;
-    const isPwdProtected = pasteMetadata.passwordProtected;
-    var password = "";
+    const urlCode = pasteMetadata.data.urlCode;
+    const burnOnRead = pasteMetadata.data.burnOnRead;
+    const isPwdProtected = pasteMetadata.data.passwordProtected;
+    let password = "";
+    let cipherText = "";
 
     if (burnOnRead === true) {
-        if (!confirm("Paste is set to be burnt after read, do you want to continue?"));
+        if (!confirm("Paste is set to be burnt after read, do you want to continue?"))
         {
             return;
         }
 
-        if (isPwdProtected === true)
-        {
+        if (isPwdProtected === true) {
             password = prompt("Paste is password protected, please enter the paste password: ", "");
+
+            if (password.length === 0) {
+                alert("Password is empty, cancelling")
+                return;
+            }
         }
 
+        const fetchEndpoint = "/api/cipherText/".concat(urlCode);
 
+        const postParams = new URLSearchParams()
+        postParams.append("password", password);
+
+        await fetch(fetchEndpoint),
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: postParams.toString()
+        }.then(res => res.json())
+            .then(jsonDecoded => {
+                if (jsonDecoded.error === true) {
+                    alert("Error occurred while retrieving cipher text: ".concat(jsonDecoded.data))
+                    return;
+                }
+
+
+            });
     }
 }
