@@ -40,4 +40,4 @@ composer update
 ```
 
 - Insert [DB schema](https://github.com/lopatar/SecureBin/blob/master/db.sql)
-- Done!
+- Done!;

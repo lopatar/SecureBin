@@ -8,7 +8,7 @@ use App\Models\Paste;
  */
 $paste = $this->getProperty('paste');
 ?>
-<body onload="decryptPaste()">
+<body>
 <a href="/"><-- Back</a>
 <h1>SecureBin</h1>
 <p>Zero knowledge pastebin, that does encryption in the browser!</p>
@@ -25,4 +25,9 @@ $paste = $this->getProperty('paste');
 <footer>
     <a href="https://github.com/lopatar/SecureBin" target="_blank">Source code</a>
 </footer>
+<script type="text/javascript">
+    window.addEventListener('load', () => {
+        decryptPaste();
+    });
+</script>
 </html>

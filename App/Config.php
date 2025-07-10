@@ -203,4 +203,9 @@ final class Config implements IConfig
     {
         return ['cost' => 12];
     }
+
+    public function getDefaultAesCipher(): string
+    {
+        return 'AES-256-CBC';
+    }
 }

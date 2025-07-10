@@ -66,7 +66,7 @@ final class Paste
 
     public function getPublicUrl(Request $request): string
     {
-        $url = $request->getUrl();
+        $url = $request->url;
         $domainName = $url->domainName->fullText;
         return "$url->scheme://$domainName/$this->urlCode#";
     }

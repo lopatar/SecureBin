@@ -1,4 +1,4 @@
-<body onload="checkSecureContext()">
+<body>
 <h1>SecureBin</h1>
 <p>Zero knowledge pastebin, that does encryption in the browser!</p>
 <div>
@@ -29,7 +29,7 @@
         <input checked id="shortenUrl" type="checkbox">
     </div>
 
-    <button id="createPasteBtn" onclick="savePaste()">Save!</button>
+    <button id="createPasteBtn" onclick="await savePaste()">Save!</button>
 </div>
 
 <p style="font-weight: bold">Encryption is handled using AES-256-GCM & cryptographically safe key generation</p>
