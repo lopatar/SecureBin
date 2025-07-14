@@ -122,8 +122,11 @@ async function savePaste() {
 
 async function decryptPaste() {
     const pasteMetadata = document.getElementById("pasteMetadata").json();
+    // noinspection JSUnresolvedReference
     const urlCode = pasteMetadata.data.urlCode;
+    // noinspection JSUnresolvedReference
     const burnOnRead = pasteMetadata.data.burnOnRead;
+    // noinspection JSUnresolvedReference
     const isPwdProtected = pasteMetadata.data.passwordProtected;
     let password = "";
     let cipherText = "";
