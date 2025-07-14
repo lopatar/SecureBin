@@ -46,6 +46,17 @@ async function generateAesKey() {
     );
 }
 
+async function importKey(keyBuf)
+{
+    return await crypto.subtle.importKey("raw", keyBuf, {
+        name: 'AES-GCM',
+        length: 256,
+    },
+        false,
+        ['decrypt']
+    )
+}
+
 function generateAesIV() {
     return crypto.getRandomValues(new Uint8Array(12));
 }
@@ -117,13 +128,26 @@ async function decryptPaste() {
     let password = "";
     let cipherText = "";
 
+    // returns "#section2" if URL is https://…/page.html#section2
+    const url = new URL(window.location.href);
+    const selector = url.hash.startsWith('#') ? url.hash.substring(1) : '';
+
+    if (!selector.contains(',')) {
+        alert("Malformed cryptographic data, cancelling");
+        return;
+    }
+
+    const [cryptoKey, cryptoIv] = selector.split(',');
+    const cryptoKeyBuf = fromBase64(cryptoKey);
+    const cryptoIvBuf = fromBase64(cryptoIv);
+
     if (burnOnRead === true) {
-        if (!confirm("Paste is set to be burnt after read, do you want to continue?"))
-        {
+        if (!confirm("Paste is set to be burnt after read, do you want to continue?")) {
             return;
         }
+    }
 
-        if (isPwdProtected === true) {
+    if (isPwdProtected === true) {
             password = prompt("Paste is password protected, please enter the paste password: ", "");
 
             if (password.length === 0) {
@@ -151,7 +175,8 @@ async function decryptPaste() {
                     return;
                 }
 
-
+                cipherText = fromBase64(jsonDecoded.data.cipherText);
+                const importedKey = importKey(cryptoKeyBuf);
             });
-    }
 }
+
