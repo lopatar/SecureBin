@@ -64,7 +64,7 @@ function generateAesIV() {
 async function savePaste() {
     checkSecureContext();
 
-    if (createPasteBtn.disabled) {
+    if (isDisabled()) {
         return;
     }
 
@@ -183,3 +183,13 @@ async function decryptPaste() {
             });
 }
 
+function isDisabled()
+{
+    dynamicElements.forEach(element => {
+        if (element.disabled === true) {
+            return true;
+        }
+    })
+
+    return false;
+}
